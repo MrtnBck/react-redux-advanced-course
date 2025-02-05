@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import Notification from "./components/UI/Notification";
 
-import { cartThunks } from "./store/cart-slice";
+import { cartThunks } from "./store/cart-actions";
 
 let isInitial = true;
 
@@ -20,12 +20,18 @@ function App() {
   const notification = useSelector((state) => state.ui.notification);
 
   useEffect(() => {
+    dispatch(cartThunks.fetchCartData());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (isInitial) {
       isInitial = false;
       return;
     }
 
-    dispatch(cartThunks.sendCartData(cart));
+    if (cart.changed) {
+      dispatch(cartThunks.sendCartData(cart));
+    }
   }, [cart, dispatch]);
 
   return (
